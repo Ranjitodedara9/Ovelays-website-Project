@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const router = require("./ROUTES/Routes");
+console.log("aa navin ma add kru ane aavu pn gu");
 const PORT = 4000;
 mongoose
   .connect("mongodb://localhost:27017/overlays-web-database")
