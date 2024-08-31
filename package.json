@@ -1,0 +1,19 @@
+{
+  "name": "overlays-web-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:overlays-web\"",
+    "start:backend": "cd backend && npm start",
+    "start:overlays-web": "cd overlays-web && npm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+
