@@ -1,9 +1,11 @@
+/* eslint-disable react/jsx-key */
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AddItemInDesc } from "../Redux/MySlices";
 import { LiaDownloadSolid, LiaRupeeSignSolid } from "react-icons/lia";
 import { IoIosArrowDown } from "react-icons/io";
+import { Filterr } from "../Redux/MySlices";
 
 const ShopAll = () => {
   const [allProducts, setAllProd] = useState([]);
@@ -11,15 +13,17 @@ const ShopAll = () => {
   const [showPriceBox, setshowPriceBox] = useState(false);
   const [paging, setpagig] = useState(1);
   const [ProdType, setProdType] = useState([]);
-
+  const [showprodType, setshowprodType] = useState(false);
+  const [Rangeval, SetRangeValur] = useState(0);
+  const [Type, setType] = useState([]);
+  const [Fill, setFILL] = useState([]);
   const lastelem = paging * 6;
   const firstelem = lastelem - 6;
-  const pagingprod = filterprod.slice(firstelem, lastelem);
+  let pagingprod = filterprod.slice(firstelem, lastelem);
 
   const fetchallprod = async () => {
     const fetdata = await fetch("http://localhost:4000/products/allProd");
     const getjes = await fetdata.json();
-    console.log(getjes);
     setAllProd(getjes);
     setfilterprod(getjes);
   };
@@ -31,15 +35,42 @@ const ShopAll = () => {
   const dispatch = useDispatch();
   const pagig = Math.ceil(filterprod.length / 6);
   const pagigArr = new Array(pagig).fill(pagig);
-
+  const d = useSelector((val) => val.mainslice.FilterProd);
+  console.log(d);
   const showpriceBox = () => {
     setshowPriceBox(!showPriceBox);
   };
-  const ShowProdType = () => {
-    const GetType = allProducts.map((val) => val.prodinfo);
 
-    const dup = [...new Set(GetType)];
-    setProdType(dup);
+  const ShowProdType = () => {
+    setshowprodType(!showprodType);
+    let GetType = allProducts.map((val) => val);
+    let getnm = allProducts.map((val) => val.prodinfo);
+    setFILL(GetType);
+    const onlynm = [...new Set(getnm)];
+    setType(onlynm);
+    const TypeOfProdAndItsLength = getnm.reduce((acc, item) => {
+      acc[item] = (acc[item] || 0) + 1;
+      return acc;
+    }, {});
+
+    const TypeWithLength = Object.entries(TypeOfProdAndItsLength).map(
+      ([key, value]) => `${value}`
+    );
+
+    console.log(TypeWithLength);
+
+    setProdType(TypeWithLength);
+  };
+  useEffect(() => {
+    const resultOfRangeFill = allProducts.filter(
+      (val) => val.price <= Rangeval
+    );
+
+    setAllProd(resultOfRangeFill);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Rangeval]);
+  const setFilterOnRange = (R) => {
+    SetRangeValur(Number(R));
   };
 
   return (
@@ -70,8 +101,9 @@ const ShopAll = () => {
                       <input
                         type="range"
                         min={999}
+                        value={Rangeval}
                         max={5000}
-                        value={999}
+                        onChange={(e) => setFilterOnRange(e.target.value)}
                       />
 
                       <div className="flex justify-center items-center gap-2  mt-2">
@@ -104,11 +136,54 @@ const ShopAll = () => {
                       <IoIosArrowDown />
                     </i>
                   </span>
-                  <div className="flex flex-col mt-2">
-                    {ProdType.map((Type) => (
-                      <span>{Type}</span>
-                    ))}
-                  </div>
+                  {showprodType && (
+                    <div className=" grid grid-cols-2 mt-2">
+                      <div>
+                        {Type.map((type, ind) => (
+                          <div
+                            className="p-1"
+                            key={ind}>
+                            <input
+                              type="checkbox"
+                              value={type}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  var a = Fill.filter(
+                                    (val) => val.prodinfo === e.target.value
+                                  );
+                                  a.map((val) => (val.check = true));
+                                  let sh = Fill.filter(
+                                    (val) => val.check === true
+                                  );
+                                  console.log(sh);
+                                  setAllProd(sh);
+                                  console.log(a);
+                                } else {
+                                  let reje = Fill.filter(
+                                    (val) => val.prodinfo === e.target.value
+                                  );
+                                  reje.map((val) => (val.check = false));
+                                  console.log(Fill);
+                                  let final = Fill.filter(
+                                    (val) => val.check === true
+                                  );
+                                  console.log(final);
+                                  if (final.length > 0) setAllProd(final);
+                                  else fetchallprod();
+                                }
+                              }}
+                            />{" "}
+                            <span>{type}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex flex-col p-1 gap-2">
+                        {ProdType.map((val) => (
+                          <span> ({val})</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <hr className="w-[90%] my-2" />
                 <div className="me-4 mt-3 p-1">
@@ -138,32 +213,37 @@ const ShopAll = () => {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-y-6 teb:grid-cols-3  ">
-              {pagingprod.map((cloth) => {
+              {allProducts.map((cloth, ind) => {
                 return (
-                  <div
-                    key={cloth.id}
-                    className="w-full flex justify-evenly items-start  flex-col">
-                    <img
-                      src={cloth.img}
-                      className="w-[90%] mx-auto p-2  lep:w-[100%] lep:h-[70vh]"
-                    />
-                    <h1 className="w-[80%] ms-4 font-head2 text-center text-[0.875rem]">
-                      {cloth.name}
-                    </h1>
-                    <p className="flex justify-center w-full font-semibold text-lg items-center text-center">
-                      <LiaRupeeSignSolid />
-                      {cloth.price}.00
-                    </p>
-                    <div className="flex justify-center items-center gap-1 w-full">
-                      {cloth.size.map((size) => (
-                        <span
-                          key={size}
-                          className="border-1 text-[11.2px] p-1 lep:p-2 lep:text-[16px] lep:mt-2">
-                          {size}
-                        </span>
-                      ))}
+                  <NavLink
+                    to={`/MainProduct`}
+                    key={ind}>
+                    <div
+                      key={cloth.id}
+                      className="w-full flex justify-evenly items-start  flex-col"
+                      onClick={() => dispatch(AddItemInDesc(cloth))}>
+                      <img
+                        src={cloth.img}
+                        className="w-[90%] mx-auto p-2  lep:w-[100%] lep:h-[70vh]"
+                      />
+                      <h1 className="w-[80%] ms-4 font-head2 text-center text-[0.875rem]">
+                        {cloth.name}
+                      </h1>
+                      <p className="flex justify-center w-full font-semibold text-lg items-center text-center">
+                        <LiaRupeeSignSolid />
+                        {cloth.price}.00
+                      </p>
+                      <div className="flex justify-center items-center gap-1 w-full">
+                        {cloth.size.map((size) => (
+                          <span
+                            key={size}
+                            className="border-1 text-[11.2px] p-1 lep:p-2 lep:text-[16px] lep:mt-2">
+                            {size}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  </NavLink>
                 );
               })}
             </div>

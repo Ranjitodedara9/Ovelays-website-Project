@@ -34,6 +34,12 @@ const ClientControler = {
       res.json({ mes: "nothig found.." });
     }
   },
+  Filter: async (req, res) => {
+    let ProdTy = req.params.filterType;
+    let ProductType = await myproductModel.find({ prodinfo: ProdTy });
+
+    res.json(ProductType);
+  },
 };
 
 module.exports = ClientControler;

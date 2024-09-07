@@ -54,6 +54,9 @@ const Navbar = () => {
         sublink: ["FAQ", "About Us", "Contact Us"],
       },
     },
+
+    "Payment",
+    "services",
   ];
 
   return (

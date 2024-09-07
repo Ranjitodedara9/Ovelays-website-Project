@@ -8,4 +8,5 @@ router.get("/:id", ClientControler.WhatsNew);
 router.post("/createCloth", AdminControler.CreateProducts);
 router.put("/EditCloth", AdminControler.EditProducts);
 router.delete("/DeleteCloth", AdminControler.DeleteProducts);
+router.get("/Filter/:filterType", ClientControler.Filter);
 module.exports = router;
