@@ -8,14 +8,19 @@ import { RiShoppingBag2Line } from "react-icons/ri";
 import { HiBars3 } from "react-icons/hi2";
 import MobNav from "./MobNav";
 import { NavLink } from "react-router-dom";
-const Navbar = () => {
+import { useDispatch, useSelector } from "react-redux";
+import { showPopUp } from "../Redux/MySlices";
+const Navbar = ({ setshowcart }) => {
   const [shownav, setshownav] = useState(false);
   const [searchclic, setsearchclic] = useState(false);
   const [man, setman] = useState(false);
   const [Woman, setWoman] = useState(false);
+  const [dark, setdark] = useState(false);
   const [Rich, setRich] = useState(false);
   const [GetInTouch, setGetintouch] = useState(false);
+  const data = useSelector((val) => val.mainslice.CartItem);
 
+  const dispatch = useDispatch();
   const menu = [
     "Home",
     "shop All",
@@ -25,12 +30,13 @@ const Navbar = () => {
         head: "Men",
         sublink: [
           "jacket",
-          "sweatshirts",
-          "shackets-flanelshirt",
-          "Hoddies",
-          "t-shirt",
+          "oversize-tshirt",
+          "fullsleeve-shirt",
+          "halfsleeve-shirt",
+          "hoodie",
+          "tshirt",
           "bottom",
-          "shirts",
+          "shirt",
           "polo t-shirt",
         ],
       },
@@ -54,9 +60,6 @@ const Navbar = () => {
         sublink: ["FAQ", "About Us", "Contact Us"],
       },
     },
-
-    "Payment",
-    "services",
   ];
 
   return (
@@ -95,6 +98,7 @@ const Navbar = () => {
             <span>
               <img
                 src={logo}
+                onClick={() => setdark(!dark)}
                 height="55px"
                 width="55px"
                 className="teb:h-[70px] teb:w-[70px]"
@@ -102,19 +106,25 @@ const Navbar = () => {
             </span>
           </div>
           <div className="flex items-center justify-end teb:gap-3 teb:me-5">
-            <span className="w-[25px]  h-[25px] hidden teb:block">
-              <MdOutlineEmail className="w-full h-full" />
-            </span>
             <NavLink
               to="/admin"
               state={{ ok: true }}>
-              {" "}
-              <span className="w-[25px] h-[25px] hidden teb:block">
-                <MdOutlinePerson className="w-full h-full" />
+              <span className="w-[25px]  h-[25px] hidden teb:block">
+                <MdOutlineEmail className="w-full h-full" />
               </span>
-            </NavLink>
-            <span className="teb:h-[25px] teb:w-[25px] me-6 h-[25px] w-[25px]">
+            </NavLink>{" "}
+            <span
+              className="w-[25px] h-[25px] hidden teb:block"
+              onClick={() => dispatch(showPopUp(true))}>
+              <MdOutlinePerson className="w-full h-full" />
+            </span>
+            <span
+              className="teb:h-[25px] flex justify-center  items-center teb:w-[50px] me-6 h-[25px] w-[25px]"
+              onClick={() => setshowcart(true)}>
               <RiShoppingBag2Line className="w-full h-full " />
+              <p className=" p-2 bg-orange-500 text-white rounded-full w-[20px] h-[20px] flex justify-center items-center absolute top-14 right-12">
+                {data.length}
+              </p>
             </span>
           </div>
         </div>
@@ -133,10 +143,10 @@ const Navbar = () => {
                         ind == 0
                           ? "/"
                           : "/MainProduct" || ind == 1
-                          ? "/ShopAll"
+                          ? "/ShopAll/allproducts"
                           : "/"
                       }
-                      state={{ ok: true }}>
+                      state={{ ok: true, NavValue: "allproducts" }}>
                       {val}
                     </NavLink>
                   </p>
@@ -156,7 +166,13 @@ const Navbar = () => {
                         onMouseEnter={() => setman(true)}>
                         <span className="flex flex-col gap-2 mx-4 bg-white mt-[23%] border-[1px] p-3">
                           {val.Men.sublink.map((val, ind) => {
-                            return <p key={ind}>{val}</p>;
+                            return (
+                              <NavLink
+                                to={`/ShopAll/${val}`}
+                                state={{ NavValue: val }}>
+                                <p key={ind}>{val}</p>
+                              </NavLink>
+                            );
                           })}
                         </span>
                       </div>

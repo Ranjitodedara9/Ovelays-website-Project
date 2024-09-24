@@ -1,8 +1,22 @@
 const ClientControler = require("../CONTROLERS/ClientControler");
 const AdminControler = require("../CONTROLERS/AdminControler");
 const router = require("express").Router();
+const multer = require("multer");
 
-router.get("/allProd", ClientControler.ShopAll);
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    return cb(null, "./Public/HeroImg");
+  },
+  filename: (req, file, cb) => {
+    return cb(null, `${Date.now()}_${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
+router.get("/allProd/:nav", ClientControler.ShopAll);
+router.post("/SignUp", ClientControler.SignUpUser);
+router.post("/Login",ClientControler.LoginUser)
+router.post("/HeroImage", upload.single("file"), AdminControler.FileUpload);
 router.get("/oversized-tshirt", ClientControler.DiscoverSlider);
 router.get("/:id", ClientControler.WhatsNew);
 router.post("/createCloth", AdminControler.CreateProducts);

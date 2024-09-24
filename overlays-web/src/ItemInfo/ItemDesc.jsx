@@ -6,17 +6,26 @@ import { IoMdMail } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 import { LiaRupeeSignSolid } from "react-icons/lia";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AddToCart } from "../Redux/MySlices";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ItemDesc = () => {
   const [count, setcount] = useState(0);
   const [care, showcare] = useState(false);
   const [desc, showdesc] = useState(false);
   window.scroll(0, 0);
+  const dispatch = useDispatch();
   const ItemInDesc = useSelector((val) => val.mainslice.ItemInDesc);
   console.log(ItemInDesc);
+
+  const addtocart = () => {
+    dispatch(AddToCart(ItemInDesc));
+  };
   return (
     <>
+      <ToastContainer />
       <div className="flex  h-auto  lep:flex-row">
         <div className="mt-[14%] flex flex-col lep:flex-row w-full lep:gap-5 justify-center ">
           <div className="flex  items-center  justify-center h-screen lep:justify-end lep:me-5 lep:h-auto lep:items-start  w-[100%] ">
@@ -86,7 +95,9 @@ const ItemDesc = () => {
                 </div>
               </div>
               <div className="items-center justify-center hidden w-full gap-2 lep:flex-col -ms-4 lep:flex">
-                <button className="w-[90%] rounded-sm bg-gray-300 uppercase flex justify-center items-center p-2 h-50px">
+                <button
+                  className="w-[90%] rounded-sm bg-gray-300 uppercase flex justify-center items-center p-2 h-50px"
+                  onClick={addtocart}>
                   Add To Cart
                 </button>
                 <div className="flex flex-col items-center justify-center w-full">

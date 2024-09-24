@@ -1,8 +1,17 @@
-const myproductModel = require("../MODELS/ProductModel");
+const { myproductModel } = require("../MODELS/ProductModel");
+const { UserModel } = require("../MODELS/ProductModel");
 const ClientControler = {
   ShopAll: async (req, res) => {
-    const allprod = await myproductModel.find();
-    res.json(allprod);
+    console.log(req.params.nav);
+    if (req.params.nav === "allproducts") {
+      console.log("show");
+      const allprod = await myproductModel.find();
+      console.log(allprod);
+      res.json(allprod);
+    } else {
+      const navprod = await myproductModel.find({ prodinfo: req.params.nav });
+      res.json(navprod);
+    }
   },
   DiscoverSlider: async (req, res) => {
     const disSlider = await myproductModel.find({
@@ -39,6 +48,30 @@ const ClientControler = {
     let ProductType = await myproductModel.find({ prodinfo: ProdTy });
 
     res.json(ProductType);
+  },
+  SignUpUser: async (req, res) => {
+    const { usernm, mail, pass } = req.body;
+    const createuser = await UserModel({
+      username: usernm,
+      email: mail,
+      password: pass,
+    });
+    createuser.save();
+    if (createuser) {
+      res.json({ mes: true });
+    } else {
+      res.json({ mes: "fetching problem" });
+    }
+  },
+  LoginUser: async (req, res) => {
+    const { usernm, pass } = req.body;
+    const finduser = await UserModel.find({ username: usernm, password: pass });
+    console.log(finduser);
+    if (finduser.length > 0) {
+      res.json({ mes: true });
+    } else {
+      res.json({ mes: false });
+    }
   },
 };
 

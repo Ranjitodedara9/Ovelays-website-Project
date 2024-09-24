@@ -1,5 +1,6 @@
-const myproductModel = require("../MODELS/ProductModel");
-
+const { myproductModel } = require("../MODELS/ProductModel");
+const { PosterModel } = require("../MODELS/ProductModel");
+const upload = require("../server");
 const AdminControler = {
   CreateProducts: async (req, res) => {
     const createcloth = await myproductModel.create({
@@ -44,6 +45,20 @@ const AdminControler = {
       res.json({ mes: true });
     } else {
       res.json({ mes: false });
+    }
+  },
+  FileUpload: async (req, res) => {
+    console.log(req.body);
+    console.log(req.file);
+    const filePath = `http://localhost:4000/Public/HeroImg/${req.file.filename}`;
+
+    const addposter = await PosterModel.create({ image: filePath });
+    console.log(addposter);
+    const allPosters = await PosterModel.find();
+    if (addposter) {
+      res.json({ Img: allPosters });
+    } else {
+      res.json({ mes: "fetching problem" });
     }
   },
 };
