@@ -1,4 +1,4 @@
-const { myproductModel } = require("../MODELS/ProductModel");
+const { myproductModel, UserModel, Order } = require("../MODELS/ProductModel");
 const { PosterModel } = require("../MODELS/ProductModel");
 const upload = require("../server");
 const AdminControler = {
@@ -60,6 +60,27 @@ const AdminControler = {
     } else {
       res.json({ mes: "fetching problem" });
     }
+  },
+  ordersadd: async (req, res) => {
+    console.log(req.body);
+    const crt = await Order({
+      name: req.body.name,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      pincode: req.body.pincode,
+    });
+    await crt.save();
+    if (crt) {
+      res.json({ mes: "hey" });
+    } else {
+      res.json({ mes: "nop" });
+    }
+  },
+  getorderdet: async (req, res) => {
+    console.log("ssms savu");
+    let arr = [];
+    res.json(arr);
   },
 };
 

@@ -1,5 +1,6 @@
 const { myproductModel } = require("../MODELS/ProductModel");
 const { UserModel } = require("../MODELS/ProductModel");
+const passport = require("passport");
 const ClientControler = {
   ShopAll: async (req, res) => {
     console.log(req.params.nav);
@@ -67,10 +68,30 @@ const ClientControler = {
     const { usernm, pass } = req.body;
     const finduser = await UserModel.find({ username: usernm, password: pass });
     console.log(finduser);
-    if (finduser.length > 0) {
-      res.json({ mes: true });
-    } else {
-      res.json({ mes: false });
+    res.json({ mes: "successfully login" });
+  },
+  DispUser: async (req, res) => {
+    const fet = await UserModel.find();
+    res.json(fet);
+  },
+  PersonData: async (req, res) => {
+    console.log("aamaavu");
+    try {
+      const response = await UserModel.find();
+
+      res.status(200).json(response); // Use 200 for successful GET request
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  },
+  DeleteUser: async (req, res) => {
+    try {
+      const { deleteid } = req.params;
+      console.log(deleteid);
+      await UserModel.findByIdAndDelete(deleteid); // Changed User to Person
+      res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Error deleting user", error });
     }
   },
 };

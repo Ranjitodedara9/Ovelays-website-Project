@@ -14,9 +14,7 @@ const Navbar = ({ setshowcart }) => {
   const [shownav, setshownav] = useState(false);
   const [searchclic, setsearchclic] = useState(false);
   const [man, setman] = useState(false);
-  const [Woman, setWoman] = useState(false);
   const [dark, setdark] = useState(false);
-  const [Rich, setRich] = useState(false);
   const [GetInTouch, setGetintouch] = useState(false);
   const data = useSelector((val) => val.mainslice.CartItem);
 
@@ -40,21 +38,7 @@ const Navbar = ({ setshowcart }) => {
           "polo t-shirt",
         ],
       },
-      Woman: {
-        head: "Woman",
-        sublink: [
-          "Empower Her",
-          "Crop Top",
-          "Hoodies",
-          "Sweatshirts",
-          "Bottoms",
-        ],
-      },
 
-      Rich: {
-        head: "Rich Cotton",
-        sublink: ["Supima + modal", "Supima"],
-      },
       GetInTouch: {
         head: "Get In Touch",
         sublink: ["FAQ", "About Us", "Contact Us"],
@@ -118,14 +102,15 @@ const Navbar = ({ setshowcart }) => {
               onClick={() => dispatch(showPopUp(true))}>
               <MdOutlinePerson className="w-full h-full" />
             </span>
-            <span
+           <NavLink to="/Cart"> <span
               className="teb:h-[25px] flex justify-center  items-center teb:w-[50px] me-6 h-[25px] w-[25px]"
-              onClick={() => setshowcart(true)}>
+              >
               <RiShoppingBag2Line className="w-full h-full " />
               <p className=" p-2 bg-orange-500 text-white rounded-full w-[20px] h-[20px] flex justify-center items-center absolute top-14 right-12">
                 {data.length}
               </p>
             </span>
+            </NavLink>
           </div>
         </div>
         <hr className=" mx-auto w-[94%] border-[1px] border-gray-600/75"></hr>
@@ -154,81 +139,50 @@ const Navbar = ({ setshowcart }) => {
               } else {
                 return (
                   <>
-                    <p
-                      onMouseEnter={() => setman(!man)}
-                      onMouseLeave={() => setman(false)}>
-                      {val.Men.head}
-                    </p>
-                    {man && (
-                      <div
-                        className="absolute   mt-[21%]  p-2 ms-[-6%]"
-                        onMouseLeave={() => setman(!man)}
-                        onMouseEnter={() => setman(true)}>
-                        <span className="flex flex-col gap-2 mx-4 bg-white mt-[23%] border-[1px] p-3">
-                          {val.Men.sublink.map((val, ind) => {
-                            return (
-                              <NavLink
-                                to={`/ShopAll/${val}`}
-                                state={{ NavValue: val }}>
-                                <p key={ind}>{val}</p>
-                              </NavLink>
-                            );
-                          })}
-                        </span>
-                      </div>
-                    )}
-                    <p
-                      onMouseEnter={() => setWoman(!Woman)}
-                      onMouseLeave={() => setWoman(false)}>
-                      {val.Woman.head}
-                    </p>
-                    {Woman && (
-                      <div
-                        className="absolute   mt-[14%]   p-2"
-                        onMouseLeave={() => setWoman(!Woman)}
-                        onMouseEnter={() => setWoman(true)}>
-                        <span className="flex flex-col gap-2 mx-4 bg-white mt-[29%] ms-[-2%] p-3 border-[1px]">
-                          {val.Woman.sublink.map((val, ind) => {
-                            return <p key={ind}>{val}</p>;
-                          })}
-                        </span>
-                      </div>
-                    )}
-                    <p>Sale</p>
-                    <p
-                      onMouseEnter={() => setRich(!Rich)}
-                      onMouseLeave={() => setRich(false)}>
-                      {val.Rich.head}
-                    </p>
-                    {Rich && (
-                      <div
-                        className="absolute   mt-[7%] ms-[15%]   p-2"
-                        onMouseLeave={() => setRich(!Rich)}
-                        onMouseEnter={() => setRich(true)}>
-                        <span className="flex flex-col gap-2 mx-4 bg-white mt-[25%] ms-[22%] p-3 border-[1px]">
-                          {val.Rich.sublink.map((val, ind) => {
-                            return <p key={ind}>{val}</p>;
-                          })}
-                        </span>
-                      </div>
-                    )}
-                    <p
-                      onMouseEnter={() => setGetintouch(!GetInTouch)}
-                      onMouseLeave={() => setGetintouch(false)}>
-                      {val.GetInTouch.head}
-                    </p>
-                    {GetInTouch && (
-                      <div
-                        className="absolute   mt-[7%] ms-[38%]   p-2"
-                        onMouseLeave={() => setGetintouch(!GetInTouch)}
-                        onMouseEnter={() => setGetintouch(true)}>
-                        <span className="flex flex-col gap-2 mx-4 bg-white mt-[49%] ms-[22%] p-3 border-[1px]">
-                          {val.GetInTouch.sublink.map((val, ind) => {
-                            return <p key={ind}>{val}</p>;
-                          })}
-                        </span>
-                      </div>
-                    )}
+                    <div>
+                      <p
+                        onMouseEnter={() => setman(!man)}
+                        onMouseLeave={() => setman(false)}>
+                        {val.Men.head}
+                      </p>
+                      {man && (
+                        <div
+                          className="absolute    p-2 ms-[-6%]"
+                          onMouseLeave={() => setman(!man)}
+                          onMouseEnter={() => setman(true)}>
+                          <span className="flex flex-col gap-2 mx-4 mt-2 bg-white  border-[1px] p-3">
+                            {val.Men.sublink.map((val, ind) => {
+                              return (
+                                <NavLink
+                                  to={`/ShopAll/${val}`}
+                                  state={{ NavValue: val }}>
+                                  <p key={ind}>{val}</p>
+                                </NavLink>
+                              );
+                            })}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <p
+                        onMouseEnter={() => setGetintouch(!GetInTouch)}
+                        onMouseLeave={() => setGetintouch(false)}>
+                        {val.GetInTouch.head}
+                      </p>
+                      {GetInTouch && (
+                        <div
+                          className="absolute     p-2 "
+                          onMouseLeave={() => setGetintouch(!GetInTouch)}
+                          onMouseEnter={() => setGetintouch(true)}>
+                          <span className="flex mt-2 flex-col gap-2 mx-4 bg-white  p-3 border-[1px]">
+                            {val.GetInTouch.sublink.map((val, ind) => {
+                              return <p key={ind}>{val}</p>;
+                            })}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </>
                 );
               }

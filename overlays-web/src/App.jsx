@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import Users from "./Pages/Users.jsx";
 import LoginUser from "./LoginUser.jsx";
 import SignUp from "./SignUp.jsx";
+import ProductBuy from "./ProductBuy.jsx";
 
 const ItemDesc = lazy(() => import("./ItemInfo/ItemDesc.jsx"));
 const ShopAll = lazy(() => import("./Pages/ShopAll.jsx"));
@@ -26,14 +27,19 @@ const App = () => {
         location.pathname !== "/admin/dashboard" &&
         location.pathname !== "/admin/" &&
         location.pathname !== "/admin" && <Navbar setshowcart={setshowcart} />}
-      <Cart
-        showcart={showcart}
-        setshowcart={setshowcart}
-      />
+
       <Routes>
+        <Route
+          path="/Cart"
+          element={<Cart />}
+        />
         <Route
           path="/"
           element={<MainHome />}></Route>
+        <Route
+          path="/productdetails"
+          element={<ProductBuy />}
+        />
 
         <Route
           path="/MainProduct"

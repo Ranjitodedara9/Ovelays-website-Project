@@ -82,49 +82,6 @@ const MobNav = ({ shownav, setshownav, searchclic, setsearchclic, menu }) => {
                         })
                       : ""}{" "}
                     <hr className="w-[90%]"></hr>
-                    <p className="flex items-center justify-between gap-1 p-2 text-2xl uppercase">
-                      {val.Woman.head}{" "}
-                      {!searchclic && (
-                        <FaAngleDown onClick={() => setwoman(!woman)} />
-                      )}
-                    </p>
-                    <hr className="w-[90%]"></hr>
-                    {woman || searchclic
-                      ? val.Woman.sublink.map((val, ind) => {
-                          return (
-                            <>
-                              <h1
-                                className="ms-2 text-[18px]"
-                                key={ind}>
-                                {val}
-                              </h1>
-                            </>
-                          );
-                        })
-                      : ""}{" "}
-                    <hr className="w-[90%]"></hr>
-                    <h1 className="text-2xl uppercase ms-2">Sale</h1>
-                    <hr className="w-[90%]"></hr>
-                    <p className="flex items-center justify-between p-2 text-2xl uppercase ">
-                      {val.Rich.head}{" "}
-                      {!searchclic && (
-                        <FaAngleDown onClick={() => setsale(!sale)} />
-                      )}
-                    </p>
-                    <hr className="w-[90%]"></hr>
-                    {sale || searchclic
-                      ? val.Rich.sublink.map((val, ind) => {
-                          return (
-                            <>
-                              <h1
-                                className="ms-2 text-[18px]"
-                                key={ind}>
-                                {val}
-                              </h1>
-                            </>
-                          );
-                        })
-                      : ""}{" "}
                     <p className="flex items-center justify-between p-2 text-2xl uppercase">
                       {val.GetInTouch.head}{" "}
                       {!searchclic && (
@@ -160,7 +117,6 @@ const MobNav = ({ shownav, setshownav, searchclic, setsearchclic, menu }) => {
           </span>
         </div>
       </div>
-
     </div>
   );
 };

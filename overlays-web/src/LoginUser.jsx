@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { redirect, useLocation, useNavigate } from "react-router-dom";
 import { Dialog } from "@radix-ui/themes/dist/cjs/index.js";
 import { Text } from "@radix-ui/themes/dist/cjs/index.js";
@@ -9,23 +9,38 @@ import { useDispatch, useSelector } from "react-redux";
 import { showPopUp, showSignUp } from "./Redux/MySlices";
 import axios from "axios";
 const LoginUser = () => {
+  const [massage, setmassage] = useState(null);
   const dispatch = useDispatch();
   const data = useSelector((val) => val.mainslice.show);
   const username = useRef();
   const password = useRef();
-  const LoginBtn = async () => {
-    const usernm = username.current.value;
-    const pass = password.current.value;
-    const LoginNow = await axios.post("http://localhost:4000/user/Login", {
-      usernm,
-      pass,
-    });
-    if (LoginNow.data.mes) {
-      alert("login succesfully....");
-      username.current.value = null;
-      password.current.value = null;
+  const LoginBtn = async (e) => {
+    try {
+      e.preventDefault();
+      const usernm = username.current.value;
+      const pass = password.current.value;
+      const LoginNow = await fetch("http://localhost:4000/user/Login", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: usernm,
+          password: pass,
+        }),
+      });
+      const getjes = await LoginNow.json();
+      console.log(getjes);
+      if (getjes.mes === "login successfuly") {
+        username.current.value = null;
+        password.current.value = null;
+        setmassage(null);
+      } else {
+        setmassage(getjes.mes);
+      }
+    } catch (error) {
+      console.log("aamaj vandho che");
     }
-    console.log(LoginNow);
   };
   return (
     <div className="">
@@ -36,7 +51,6 @@ const LoginUser = () => {
             size={"7"}>
             Login <span className="text-orange-500">Here</span>
           </Dialog.Title>
-
           <Flex
             direction="column"
             gap="3">
@@ -53,6 +67,9 @@ const LoginUser = () => {
                 placeholder="Enter your full name"
               />
             </label>
+            {massage === "User not found" && (
+              <p className="text-red-600">* {massage}</p>
+            )}
             <label>
               <Text
                 as="div"
@@ -66,13 +83,14 @@ const LoginUser = () => {
                 placeholder="Enter your password"
               />
             </label>
-
-            <a
-              href="#"
+            {massage === "incorected password" && (
+              <p className="text-red-600">* {massage}</p>
+            )}
+            <span
               onClick={() => dispatch(showSignUp(true))}
               className="text-center text-cyan-950 underline">
               Create New Account
-            </a>
+            </span>
           </Flex>
 
           <Flex

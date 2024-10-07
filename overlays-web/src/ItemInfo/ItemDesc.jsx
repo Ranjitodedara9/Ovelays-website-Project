@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import img1 from "./chart img/IMG_4485 (1).jpg";
 import { FaTruck } from "react-icons/fa";
 import { TbTruckReturn } from "react-icons/tb";
@@ -12,16 +12,20 @@ import { AddToCart } from "../Redux/MySlices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const ItemDesc = () => {
-  const [count, setcount] = useState(0);
+  const [count, setcount] = useState(1);
   const [care, showcare] = useState(false);
   const [desc, showdesc] = useState(false);
-  window.scroll(0, 0);
+  useEffect(()=>{
+
+    window.scroll(0, 0);
+  },[])
   const dispatch = useDispatch();
   const ItemInDesc = useSelector((val) => val.mainslice.ItemInDesc);
   console.log(ItemInDesc);
 
   const addtocart = () => {
-    dispatch(AddToCart(ItemInDesc));
+    const nvo = { ...ItemInDesc, qty: count };
+    dispatch(AddToCart(nvo));
   };
   return (
     <>

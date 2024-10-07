@@ -1,143 +1,173 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { removeFromCart } from "../Redux/MySlices";
-import { RxCross2 } from "react-icons/rx";
-import { useNavigate } from "react-router-dom";
-const Cart = ({ showcart, setshowcart }) => {
-  const getcartItem = useSelector((val) => val);
-  const [count, setcount] = useState(0);
-  const navigate = useNavigate();
-  const [products, setProduct] = useState([]);
-  let data = getcartItem.mainslice.CartItem;
-  useEffect(() => {
-    setProduct(data);
-  }, [data]);
+import React from "react";
+import {
+  incrementQuantity,
+  decrementQuantity,
+  removeItemFromCart,
+} from "../Redux/newslice";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { ProductAdd } from "../Redux/newslice";
+import { AddToCart, removeFromCart } from "../Redux/MySlices";
+
+function Cart() {
+  const cartItems = useSelector((state) => state.mainslice.CartItem);
+  console.log(cartItems);
   const dispatch = useDispatch();
-  const fe = localStorage.getItem("cart");
+  const navigate = useNavigate();
 
-  let ar = [];
-  ar.push(JSON.stringify(fe));
-  console.log(JSON.parse(ar));
-
-  let Totalprice = products.reduce((firstval, prodval) => {
-    let total = firstval + prodval.price;
-    return total;
-  }, 0);
-  console.log(Totalprice);
-  const gotoshopall = () => {
-    setshowcart(false);
-    navigate("/ShopAll/allproducts", {
-      state: { NavValue: "allproducts", ok: true },
-    });
+  const handleRemoveItem = (itemId) => {
+    console.log(itemId);
+    dispatch(removeFromCart(itemId));
   };
+
+  const handleIncrement = (id) => {
+    dispatch(incrementQuantity(id));
+  };
+
+  const handleDecrement = (id) => {
+    dispatch(decrementQuantity(id));
+  };
+
+  const handleBuyNow = (product) => {
+    console.log(product);
+    dispatch(ProductAdd(product));
+    navigate("/productdetails", { state: product });
+    window.scrollTo(0, 0);
+    // Add your buy now logic here
+  };
+
+  let subtotal = 0;
+
+  if (cartItems) {
+    cartItems.reduce((firstval, currentval) => {
+      return (subtotal = currentval.price * currentval.qty + firstval);
+    }, 0);
+  } else {
+    subtotal = 0;
+  }
+  console.log(Number(subtotal));
+
   return (
     <>
-      {showcart && (
-        <div className="fixed  z-50 w-full top-0">
-          <div className="w-[90%]  animate__animated animate__fadeInRight teb:w-1/2  absolute lep:w-1/3  text-black z-40  h-svh flex-col bg-white  flex   right-0 ">
-            <div className="flex justify-between items-center">
-              <h1 className="text-center p-2 uppercase text-2xl font-semibold">
-                C<span className="text-orange-600 font-serif">a</span>rt
-              </h1>
-              <span
-                className="text-3xl me-4"
-                onClick={() => setshowcart(false)}>
-                {" "}
-                <RxCross2 />
-              </span>
-            </div>
-            <hr className="w-[90%] mx-auto" />
-            <div className="flex flex-col mt-2 gap-2 overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-slate-100 h-[80vh] ">
-              {products.length <= 0 ? (
-                <div className="flex justify-center items-center h-full">
-                  <p className="text-center uppercase font-bold text-red-600 text-2xl flex flex-col gap-4">
-                    Please add Product
-                    <button
-                      className="p-2 border-[1px] bg-black text-white text-xl  uppercase font-head2"
-                      onClick={gotoshopall}>
-                      Buy products
-                    </button>
-                  </p>
-                </div>
-              ) : (
-                ""
-              )}
-              {products.map((val, ind) => {
-                return (
-                  <>
-                    <div className=" mx-auto p-2 flex border-[1px]  w-[90%]  flex-col">
-                      <div className="grid grid-cols-[auto]">
-                        <div className="flex  gap-2">
-                          <img
-                            src={val.img}
-                            width={80}
-                          />
-                          <div className="grid  ">
-                            <div className="flex flex-col gap-2">
-                              <h1 className=" ">{val.name}</h1>
+      <div className="w-[100%] m-auto mt-10 header-box">
+        <div className="flex justify-between  h-[40vh] items-center w-[80%] m-auto">
+          <h1 className="text-4xl font-bold">Cart</h1>
+          <div className="flex gap-5">
+            <Link to={"/"}>
+              <a className="text-blue-500 hover:underline">Home</a>
+            </Link>
+            /<span className="text-gray-500">Cart</span>
+          </div>
+        </div>
+      </div>
 
-                              <p className=" flex gap-2  items-center">
-                                {val.price}{" "}
-                                <span
-                                  className="text-xs  uppercase underline cursor-pointer"
-                                  onClick={() =>
-                                    dispatch(removeFromCart(val._id))
-                                  }>
-                                  remove
-                                </span>
-                              </p>
-                              <div className="w-[60px]  rounded-md border-[1px]  border-solid h-[30px] flex justify-around items-center">
-                                <span
-                                  className="font-bold text-[16px]"
-                                  onClick={() => {
-                                    if (count <= 0) {
-                                      setcount(0);
-                                    } else {
-                                      setcount(count - 1);
-                                    }
-                                  }}>
-                                  -
-                                </span>
-                                <span>{count}</span>
-                                <span
-                                  className=" font-bold text-[16px]"
-                                  onClick={() => setcount(count + 1)}>
-                                  +
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+      <div className="w-full px-4 mx-auto mt-10 lg:w-4/5 sm:px-6 lg:px-8 cart-table-container">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse cart-table">
+            <thead>
+              <tr>
+                <th className="p-2 border-b lg:p-4">Image</th>
+                <th className="p-2 border-b lg:p-4">Product</th>
+                <th className="p-2 border-b lg:p-4">Quantity</th>
+                <th className="p-2 border-b lg:p-4">Price</th>
+                <th className="p-2 border-b lg:p-4">Total</th>
+                <th className="p-2 border-b lg:p-4">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cartItems.map((item) => (
+                <tr
+                  key={item.id}
+                  className="border-b">
+                  <td className="p-2 lg:p-4">
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      className="object-cover w-20 h-20 cart-item-image"
+                    />
+                  </td>
+                  <td className="p-2 lg:p-4">{item.name}</td>
+                  <td className="p-2 lg:p-4">
+                    <div className="flex quantity-controls">
+                      <span
+                        className="font-bold text-[16px]"
+                        onClick={() => {
+                          if (item.qty <= 1) {
+                            dispatch(AddToCart({ qty: 1, mes: "minqty" }));
+                          } else {
+                            dispatch(
+                              AddToCart({
+                                qty: item.qty - 1,
+                                id: item._id,
+                                mes: "minqty",
+                              })
+                            );
+                          }
+                        }}>
+                        -
+                      </span>
+                      <span>{item.qty}</span>
+                      <span
+                        className=" font-bold text-[16px]"
+                        onClick={() =>
+                          dispatch(
+                            AddToCart({
+                              qty: item.qty + 1,
+                              id: item._id,
+                              mes: "plusqty",
+                            })
+                          )
+                        }>
+                        +
+                      </span>
                     </div>
-                  </>
-                );
-              })}
+                  </td>
+
+                  <td className="p-2 lg:p-4">
+                    {" "}
+                    <span className="block font-bold lg:hidden">Price:</span>$
+                    {item.price}
+                  </td>
+
+                  <td className="p-2 lg:p-4">
+                    <span className="block font-bold lg:hidden">Total:</span>$
+                    {item.total}
+                  </td>
+                  <td className="flex gap-3 p-2 lg:p-4">
+                    <button
+                      className="px-2 py-1 text-white bg-red-500 rounded lg:px-3 lg:py-2 remove-button hover:bg-red-600"
+                      onClick={() => handleRemoveItem(item._id)}>
+                      Remove
+                    </button>
+                    <button
+                      className="px-2 py-1 text-white bg-red-500 rounded lg:px-3 lg:py-2 remove-button hover:bg-red-600"
+                      onClick={() => handleBuyNow(item)}>
+                      Buy now
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="flex justify-end w-full px-4 mx-auto mt-10 lg:w-4/5 sm:px-6 lg:px-8">
+        <div className="w-full gap-3 p-4 text-right bg-gray-100 rounded-lg shadow-lg md:p-6 md:w-2/3 lg:w-1/3">
+          <div className="mb-4">
+            <div className="flex justify-between pb-4">
+              <span>Subtotal :</span>
+              <span>${subtotal}</span>
             </div>
-
-            <div className="bottom-0 bg-white w-full  absolute">
-              <hr className="w-[90%] mx-auto border-[1px] border-black p-2 " />
-              <div className="flex  flex-col gap-3">
-                <div className="flex justify-between p-2">
-                  <h1 className="p-2 font-semibold uppercase">
-                    Total Amount : {Totalprice}{" "}
-                    <span className="text-sm">Rs</span>
-                  </h1>
-                  <p className="p-2 font-semibold uppercase">
-                    Items: {products.length}
-                  </p>
-                </div>
-
-                <button className="border-[1px] w-[90%] bg-black p-2 text-white mx-auto mb-3 rounded-sm">
-                  Proceed To Buy
-                </button>
-              </div>
+            <hr />
+            <div className="flex justify-between pt-4">
+              <span>Total :</span>
+              <span>${subtotal}</span>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
-};
+}
 
 export default Cart;

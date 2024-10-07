@@ -12,7 +12,7 @@ import Orders from "./Orders";
 const AdminPanel = () => {
   const navigate = useNavigate();
   const gotodashboard = () => {
-    navigate("/admin/");
+    navigate("/admin/", { state: { NavValue: "allproducts" } });
   };
   const gotoProducts = () => {
     navigate("/admin/Products", { state: { NavValue: "allproducts" } });
@@ -20,6 +20,7 @@ const AdminPanel = () => {
   const gotoOrders = () => {
     navigate("/admin/Orders");
   };
+
   return (
     <>
       <div className="grid grid-cols-[auto,1fr]">

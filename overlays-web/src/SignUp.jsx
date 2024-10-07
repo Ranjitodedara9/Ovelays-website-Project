@@ -73,6 +73,7 @@ const SignUp = () => {
               </Text>
               <TextField.Root
                 ref={email}
+                type="email"
                 placeholder="Enter your email"
               />
             </label>
